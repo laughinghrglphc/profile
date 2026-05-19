@@ -86,35 +86,49 @@ window.onload = () => {
 
   window.addEventListener("resize", resizeCanvas);
 
+  // Starting positions
   let x1 = 100;
   let y1 = 100;
 
-  let x2 = window.innerWidth - 220;
-  let y2 = window.innerHeight - 220;
+  let x2 = window.innerWidth - 250;
+  let y2 = window.innerHeight - 250;
 
-  let dx1 = 2;
-  let dy1 = 2;
+  // Movement speed
+  let dx1 = 2.4;
+  let dy1 = 2.1;
 
-  let dx2 = -2;
-  let dy2 = -2;
+  let dx2 = -2.3;
+  let dy2 = -2.5;
 
   function drawLightning(xStart, yStart, xEnd, yEnd) {
 
-    ctx.strokeStyle = "cyan";
-    ctx.lineWidth = 3;
+    ctx.save();
+
+    ctx.strokeStyle = `rgba(0, 255, 255, ${0.7 + Math.random() * 0.3})`;
+    ctx.lineWidth = 2 + Math.random() * 2;
+
+    ctx.shadowBlur = 25;
+    ctx.shadowColor = "cyan";
 
     ctx.beginPath();
 
     ctx.moveTo(xStart, yStart);
 
-    const segments = 12;
+    const segments = 16;
 
     for (let i = 1; i < segments; i++) {
 
       const t = i / segments;
 
-      const x = xStart + (xEnd - xStart) * t + (Math.random() - 0.5) * 30;
-      const y = yStart + (yEnd - yStart) * t + (Math.random() - 0.5) * 30;
+      const x =
+        xStart +
+        (xEnd - xStart) * t +
+        (Math.random() - 0.5) * 45;
+
+      const y =
+        yStart +
+        (yEnd - yStart) * t +
+        (Math.random() - 0.5) * 45;
 
       ctx.lineTo(x, y);
     }
@@ -122,6 +136,49 @@ window.onload = () => {
     ctx.lineTo(xEnd, yEnd);
 
     ctx.stroke();
+
+    ctx.restore();
+  }
+
+  function drawSparks(xStart, yStart, xEnd, yEnd) {
+
+    for (let i = 0; i < 40; i++) {
+
+      const t = Math.random();
+
+      const x =
+        xStart +
+        (xEnd - xStart) * t +
+        (Math.random() - 0.5) * 60;
+
+      const y =
+        yStart +
+        (yEnd - yStart) * t +
+        (Math.random() - 0.5) * 60;
+
+      const radius = Math.random() * 4 + 1;
+
+      ctx.beginPath();
+
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+
+      const colors = [
+        "rgba(255,255,255,0.9)",
+        "rgba(0,255,255,0.9)",
+        "rgba(173,216,230,0.9)",
+        "rgba(255,255,150,0.9)"
+      ];
+
+      ctx.fillStyle =
+        colors[Math.floor(Math.random() * colors.length)];
+
+      ctx.shadowBlur = 25;
+      ctx.shadowColor = "cyan";
+
+      ctx.fill();
+    }
+
+    ctx.shadowBlur = 0;
   }
 
   function animate() {
@@ -134,12 +191,14 @@ window.onload = () => {
     const w2 = gif2.clientWidth;
     const h2 = gif2.clientHeight;
 
+    // Move gifs
     x1 += dx1;
     y1 += dy1;
 
     x2 += dx2;
     y2 += dy2;
 
+    // Bounce gif 1
     if (x1 + w1 >= window.innerWidth || x1 <= 0) {
       dx1 *= -1;
     }
@@ -148,6 +207,7 @@ window.onload = () => {
       dy1 *= -1;
     }
 
+    // Bounce gif 2
     if (x2 + w2 >= window.innerWidth || x2 <= 0) {
       dx2 *= -1;
     }
@@ -156,25 +216,49 @@ window.onload = () => {
       dy2 *= -1;
     }
 
+    // Apply positions
     gif1.style.left = x1 + "px";
     gif1.style.top = y1 + "px";
 
     gif2.style.left = x2 + "px";
     gif2.style.top = y2 + "px";
 
+    // Centers
     const centerX1 = x1 + w1 / 2;
     const centerY1 = y1 + h1 / 2;
 
     const centerX2 = x2 + w2 / 2;
     const centerY2 = y2 + h2 / 2;
 
+    // Distance calculation
     const distance = Math.sqrt(
       (centerX2 - centerX1) ** 2 +
       (centerY2 - centerY1) ** 2
     );
 
-    if (distance < 250) {
-      drawLightning(centerX1, centerY1, centerX2, centerY2);
+    // Lightning trigger
+    if (distance < 260) {
+
+      drawLightning(
+        centerX1,
+        centerY1,
+        centerX2,
+        centerY2
+      );
+
+      drawLightning(
+        centerX1,
+        centerY1,
+        centerX2,
+        centerY2
+      );
+
+      drawSparks(
+        centerX1,
+        centerY1,
+        centerX2,
+        centerY2
+      );
     }
 
     requestAnimationFrame(animate);
