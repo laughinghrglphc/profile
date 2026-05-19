@@ -52,44 +52,136 @@
       alt="dvd gif"
     />
 
+<img
+      src="https://i.pinimg.com/originals/48/c9/52/48c9522aaa31a27582216bec737e92ce.gif"
+      class="dvd-gif"
+      id="dvdGif2"
+      alt="second dvd gif"
+    />
+
+
 <script>
-  window.onload = () => {
+window.onload = () => {
 
-    const gif = document.getElementById("dvdGif");
+  const gif1 = document.getElementById("dvdGif");
+  const gif2 = document.getElementById("dvdGif2");
 
-    let x = 100;
-    let y = 100;
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
 
-    let dx = 2;
-    let dy = 2;
+  canvas.style.position = "fixed";
+  canvas.style.top = "0";
+  canvas.style.left = "0";
+  canvas.style.pointerEvents = "none";
+  canvas.style.zIndex = "9998";
 
-    function animate() {
+  document.body.appendChild(canvas);
 
-      const gifWidth = gif.clientWidth;
-      const gifHeight = gif.clientHeight;
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
 
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
+  resizeCanvas();
 
-      x += dx;
-      y += dy;
+  window.addEventListener("resize", resizeCanvas);
 
-      if (x + gifWidth >= screenWidth || x <= 0) {
-        dx *= -1;
-      }
+  let x1 = 100;
+  let y1 = 100;
 
-      if (y + gifHeight >= screenHeight || y <= 0) {
-        dy *= -1;
-      }
+  let x2 = window.innerWidth - 220;
+  let y2 = window.innerHeight - 220;
 
-      gif.style.left = x + "px";
-      gif.style.top = y + "px";
+  let dx1 = 2;
+  let dy1 = 2;
 
-      requestAnimationFrame(animate);
+  let dx2 = -2;
+  let dy2 = -2;
+
+  function drawLightning(xStart, yStart, xEnd, yEnd) {
+
+    ctx.strokeStyle = "cyan";
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+
+    ctx.moveTo(xStart, yStart);
+
+    const segments = 12;
+
+    for (let i = 1; i < segments; i++) {
+
+      const t = i / segments;
+
+      const x = xStart + (xEnd - xStart) * t + (Math.random() - 0.5) * 30;
+      const y = yStart + (yEnd - yStart) * t + (Math.random() - 0.5) * 30;
+
+      ctx.lineTo(x, y);
     }
 
-    animate();
-  };
+    ctx.lineTo(xEnd, yEnd);
+
+    ctx.stroke();
+  }
+
+  function animate() {
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const w1 = gif1.clientWidth;
+    const h1 = gif1.clientHeight;
+
+    const w2 = gif2.clientWidth;
+    const h2 = gif2.clientHeight;
+
+    x1 += dx1;
+    y1 += dy1;
+
+    x2 += dx2;
+    y2 += dy2;
+
+    if (x1 + w1 >= window.innerWidth || x1 <= 0) {
+      dx1 *= -1;
+    }
+
+    if (y1 + h1 >= window.innerHeight || y1 <= 0) {
+      dy1 *= -1;
+    }
+
+    if (x2 + w2 >= window.innerWidth || x2 <= 0) {
+      dx2 *= -1;
+    }
+
+    if (y2 + h2 >= window.innerHeight || y2 <= 0) {
+      dy2 *= -1;
+    }
+
+    gif1.style.left = x1 + "px";
+    gif1.style.top = y1 + "px";
+
+    gif2.style.left = x2 + "px";
+    gif2.style.top = y2 + "px";
+
+    const centerX1 = x1 + w1 / 2;
+    const centerY1 = y1 + h1 / 2;
+
+    const centerX2 = x2 + w2 / 2;
+    const centerY2 = y2 + h2 / 2;
+
+    const distance = Math.sqrt(
+      (centerX2 - centerX1) ** 2 +
+      (centerY2 - centerY1) ** 2
+    );
+
+    if (distance < 250) {
+      drawLightning(centerX1, centerY1, centerX2, centerY2);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+};
 </script>
 
   </body>
