@@ -52,42 +52,45 @@
       alt="dvd gif"
     />
 
-    <script>
-      const gif = document.getElementById("dvdGif");
+<script>
+  window.onload = () => {
 
-      let x = 100;
-      let y = 100;
+    const gif = document.getElementById("dvdGif");
 
-      let dx = 2;
-      let dy = 2;
+    let x = 100;
+    let y = 100;
 
-      function animate() {
+    let dx = 2;
+    let dy = 2;
 
-        const gifWidth = gif.offsetWidth;
-        const gifHeight = gif.offsetHeight;
+    function animate() {
 
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
+      const gifWidth = gif.clientWidth;
+      const gifHeight = gif.clientHeight;
 
-        x += dx;
-        y += dy;
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
 
-        if (x + gifWidth >= screenWidth || x <= 0) {
-          dx = -dx;
-        }
+      x += dx;
+      y += dy;
 
-        if (y + gifHeight >= screenHeight || y <= 0) {
-          dy = -dy;
-        }
-
-        gif.style.left = x + "px";
-        gif.style.top = y + "px";
-
-        requestAnimationFrame(animate);
+      if (x + gifWidth >= screenWidth || x <= 0) {
+        dx *= -1;
       }
 
-      animate();
-    </script>
+      if (y + gifHeight >= screenHeight || y <= 0) {
+        dy *= -1;
+      }
+
+      gif.style.left = x + "px";
+      gif.style.top = y + "px";
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  };
+</script>
 
   </body>
 
