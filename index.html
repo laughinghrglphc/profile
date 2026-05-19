@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.2/css/all.css">
-    <link rel="stylesheet" href="style.css"
+    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
@@ -32,7 +32,7 @@
         <h1>Pablo Davila</h1>
         <h2>Programmer</h2>
         <p class="neon-text">i really really REALLY hate front end</p>
-        <a href="https://www.youtube.com/watch?v=fq3abPnEEGE" target="_blank" class="button-43" role="button">win a free iphone 10!!!!</a>
+        <a href="https://www.youtube.com/watch?v=6YsNRnZRgg8" target="_blank" class="button-43" role="button">win a free iphone 10!!!!</a>
       </div>
 
 
@@ -45,6 +45,50 @@
         </ul>
       </div>
     </div>
+<img
+      src="https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUydWlpdGhudnZma2cxajB4bHJiOTA2dmU0d2luZTE3Nmo2bDdnbDUyeCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/YGIpIZjgxL68w/200w.gif"
+      class="dvd-gif"
+      id="dvdGif"
+      alt="dvd gif"
+    />
+
+    <script>
+      const gif = document.getElementById("dvdGif");
+
+      let x = 100;
+      let y = 100;
+
+      let dx = 2;
+      let dy = 2;
+
+      function animate() {
+
+        const gifWidth = gif.offsetWidth;
+        const gifHeight = gif.offsetHeight;
+
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+
+        x += dx;
+        y += dy;
+
+        if (x + gifWidth >= screenWidth || x <= 0) {
+          dx = -dx;
+        }
+
+        if (y + gifHeight >= screenHeight || y <= 0) {
+          dy = -dy;
+        }
+
+        gif.style.left = x + "px";
+        gif.style.top = y + "px";
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+
   </body>
 
 </html>
