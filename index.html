@@ -100,6 +100,9 @@ window.onload = () => {
   let dx2 = -2.3;
   let dy2 = -2.5;
 
+  // Prevent explosion spam
+  let lightningActive = false;
+
   function drawLightning(xStart, yStart, xEnd, yEnd) {
 
     ctx.save();
@@ -173,6 +176,38 @@ window.onload = () => {
         colors[Math.floor(Math.random() * colors.length)];
 
       ctx.shadowBlur = 25;
+      ctx.shadowColor = "cyan";
+
+      ctx.fill();
+    }
+
+    ctx.shadowBlur = 0;
+  }
+
+  function drawExplosion() {
+
+    for (let i = 0; i < 250; i++) {
+
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+
+      const radius = Math.random() * 6 + 1;
+
+      ctx.beginPath();
+
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+
+      const colors = [
+        "rgba(255,255,255,0.9)",
+        "rgba(0,255,255,0.9)",
+        "rgba(173,216,230,0.9)",
+        "rgba(255,255,150,0.9)"
+      ];
+
+      ctx.fillStyle =
+        colors[Math.floor(Math.random() * colors.length)];
+
+      ctx.shadowBlur = 30;
       ctx.shadowColor = "cyan";
 
       ctx.fill();
@@ -259,6 +294,19 @@ window.onload = () => {
         centerX2,
         centerY2
       );
+
+      // Trigger giant explosion ONCE
+      if (!lightningActive) {
+
+        lightningActive = true;
+
+        drawExplosion();
+      }
+
+    } else {
+
+      // Reset trigger when separated
+      lightningActive = false;
     }
 
     requestAnimationFrame(animate);
