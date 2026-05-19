@@ -86,6 +86,9 @@ window.onload = () => {
 
   window.addEventListener("resize", resizeCanvas);
 
+  // Explosion particles
+  let explosions = [];
+
   // Starting positions
   let x1 = 100;
   let y1 = 100;
@@ -107,7 +110,9 @@ window.onload = () => {
 
     ctx.save();
 
-    ctx.strokeStyle = `rgba(0, 255, 255, ${0.7 + Math.random() * 0.3})`;
+    ctx.strokeStyle =
+      `rgba(0, 255, 255, ${0.7 + Math.random() * 0.3})`;
+
     ctx.lineWidth = 2 + Math.random() * 2;
 
     ctx.shadowBlur = 25;
@@ -184,24 +189,58 @@ window.onload = () => {
     ctx.shadowBlur = 0;
   }
 
-  function drawExplosion() {
+  function createExplosion(x, y) {
 
-    for (let i = 0; i < 250; i++) {
+    for (let i = 0; i < 120; i++) {
 
-      const x = Math.random() * canvas.width;
-      const y = Math.random() * canvas.height;
+      const angle = Math.random() * Math.PI * 2;
 
-      const radius = Math.random() * 6 + 1;
+      const speed = Math.random() * 6 + 2;
+
+      explosions.push({
+
+        x: x,
+        y: y,
+
+        dx: Math.cos(angle) * speed,
+        dy: Math.sin(angle) * speed,
+
+        radius: Math.random() * 4 + 1,
+
+        life: 1
+      });
+    }
+  }
+
+  function drawExplosions() {
+
+    for (let i = explosions.length - 1; i >= 0; i--) {
+
+      const p = explosions[i];
+
+      p.x += p.dx;
+      p.y += p.dy;
+
+      p.dx *= 0.98;
+      p.dy *= 0.98;
+
+      // ~1 second lifetime
+      p.life -= 0.016;
 
       ctx.beginPath();
 
-      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.arc(
+        p.x,
+        p.y,
+        p.radius,
+        0,
+        Math.PI * 2
+      );
 
       const colors = [
-        "rgba(255,255,255,0.9)",
-        "rgba(0,255,255,0.9)",
-        "rgba(173,216,230,0.9)",
-        "rgba(255,255,150,0.9)"
+        `rgba(0,255,255,${p.life})`,
+        `rgba(255,255,255,${p.life})`,
+        `rgba(150,255,255,${p.life})`
       ];
 
       ctx.fillStyle =
@@ -211,6 +250,10 @@ window.onload = () => {
       ctx.shadowColor = "cyan";
 
       ctx.fill();
+
+      if (p.life <= 0) {
+        explosions.splice(i, 1);
+      }
     }
 
     ctx.shadowBlur = 0;
@@ -219,6 +262,9 @@ window.onload = () => {
   function animate() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw lingering explosions
+    drawExplosions();
 
     const w1 = gif1.clientWidth;
     const h1 = gif1.clientHeight;
@@ -295,12 +341,15 @@ window.onload = () => {
         centerY2
       );
 
-      // Trigger giant explosion ONCE
+      // Trigger explosion ONCE
       if (!lightningActive) {
 
         lightningActive = true;
 
-        drawExplosion();
+        createExplosion(
+          (centerX1 + centerX2) / 2,
+          (centerY1 + centerY2) / 2
+        );
       }
 
     } else {
